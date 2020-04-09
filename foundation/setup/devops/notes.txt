@@ -1,0 +1,3 @@
+This folder is placeholder for Azure Devops or Github Actions, respectively.
+
+Use Azure DevOps or Github Actions to add additional automation to your solution.

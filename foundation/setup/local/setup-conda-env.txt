@@ -1,0 +1,59 @@
+# run these commands on your dev notebook
+
+# create and activate environment
+conda create --yes -n aml_template python=3.6
+conda activate aml_template
+
+# install some commons
+conda install --yes pylint black yapf rope tqdm matplotlib pillow pandas xlrd pytest
+
+# install environs
+pip install --upgrade environs
+
+# install AzureML SDK
+pip install --upgrade azureml-sdk[accel-models,automl,contrib,explain,interpret,notebooks,services,tensorboard]
+
+# install Azure CLI
+pip install --upgrade azure-cli
+
+# install Azure CLI ML extension
+az extension add -n azure-cli-ml
+
+# optional: AzureML Open Datasets
+pip install azureml-opendatasets
+
+# optional: install pyspark (TODO: commands might not be complete)
+conda install --yes "openjdk>=8,<9"
+conda install --yes pyspark
+
+# optional: install TensorFlow GPU
+conda install --yes tensorflow-gpu
+
+# optional: install VS.Code
+## - https://code.visualstudio.com/download
+## - AzureML extension
+
+# optional: install PyCharm
+## if rather want to use PyCharm, feel free to use PyCharm
+
+# optional: install JupyterLab
+conda install -y jupyterlab==1.2.6
+## install TOC and collapsible headings extensions
+jupyter labextension install @jupyterlab/toc --no-build
+jupyter labextension install @aquirdturtle/collapsible_headings --no-build
+## install code-formatter extension
+## note: using code-formatter version 1.1.0 to make it work with JupyterLab 1.2.6
+##       version >=1.2.0 is for JupyterLab 2+
+conda install -y -c conda-forge black autopep8 yapf isort jupyterlab_code_formatter==1.1.0
+jupyter labextension install @ryantam626/jupyterlab_code_formatter@1.1.0 --no-build
+jupyter serverextension enable --py jupyterlab_code_formatter
+python -c "import black; black.CACHE_DIR.mkdir(parents=True, exist_ok=True)"
+## build extensions (be warned - this can take a while to complete...)
+jupyter lab build
+
+# login to Azure
+# notes: - if you have multiple subscriptions, you can use az account show and az account set to set the right subscription
+#        - your login will be kept. you will still be logged in after a reboot.
+az login
+
+# restart to ensure that the new conda environment is properly loaded

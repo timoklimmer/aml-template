@@ -1,0 +1,12 @@
+This folder is a placeholder for Azure API Management and a hint to consider API Management in your architecture.
+
+Azure API Management is a turnkey solution for publishing APIs to external and internal consumers. Quickly create
+consistent and modern API gateways for existing backend services hosted anywhere.
+
+Provide API documentation and an interactive console
+Throttle, rate limit and quota your APIs
+Monitor health of your APIs and quickly identify errors
+Bring modern formats like JSON and REST to existing APIs
+Connect to APIs hosted anywhere on the Internet or on-premises and publish globally
+Gain analytic insights on how your APIs are being used
+Manage your service via the Azure portal, REST API, PowerShell, or Git repository

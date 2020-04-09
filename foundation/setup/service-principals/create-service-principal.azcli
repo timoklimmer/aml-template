@@ -1,0 +1,26 @@
+# run the following command in an Azure CLI to create one or more service principals for your solution
+# notes: - you might not have sufficient permissions to run this command. ask an Azure administrator to run
+#          the command for you in case you cannot.
+#        - remember the output shown by the command. it contains the service principals secret which will only be shown
+#          once.
+#        - the service principals created will have Contributor permissions across the entire subscription. to restrict
+#          permissions, use the --role and --scopes parameters as shown in the out-commented command below.
+az ad sp create-for-rbac --name http://<give your service principal a (unique) name>
+#az ad sp create-for-rbac \
+#    --name http://<give your service principal a (unique) name> \
+#    --role contributor \
+#    --scopes /subscriptions/{SubID}/resourceGroups/{ResourceGroup1} \
+#             /subscriptions/{SubID}/resourceGroups/{ResourceGroup2}
+
+# once the service principal(s) is/are created, use the result of the command(s) to either populate the
+# service-principals.env or set the corresponding environment variables before running the respective scripts.
+#
+# the service-principals.env file gives more infos for which purpose the service principals are used.
+#
+# note that all service-principals.env files have been added to .gitignore so config values in service-principals.env
+# will intentionally NOT be committed to git.
+#
+# NEVER COMMIT SECRETS TO GIT!
+#
+# To store secrets, you can use the AzureML's KeyVault service (see setup.py for more details).
+#

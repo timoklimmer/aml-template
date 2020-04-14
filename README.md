@@ -1,16 +1,21 @@
 # **amls-template**
 
-A light-weight and (hopefully) self-explanatory template for Azure Machine Learning Services.
+A lightweight and (hopefully) easy-to-use template for Azure Machine Learning Services.
 
-This repo shall serve as a template for creating an end-to-end solution on Azure Machine Learning Services. Its purpose
+This repo serves as a template for creating an end-to-end solution on Azure Machine Learning Services. Its purpose
 is to catalyze ML projects and help them get faster to production.
 
-It starts at setting up the environment, then does exploratory data analysis, creates a model training pipeline and
-finally ends with a deployed, enterprise-ready inferencing webservice.
+Topic covered:
+- setting up the environment
+- exploratory data analysis
+- creating a model training pipeline
+- creating and deploying an enterprise-ready inferencing webservice.
+
+AML's AutoML is not included yet but will likely be in future.
 
 The repo can be used with VS.Code, PyCharm, Jupyter Lab, Jupyter, ... whereby the experience with VS.Code is probably
 the best.
 
-If you have any pull request I should integrate, let me know.
+I am open and happy to accept pull requests. If you have suggestions I should integrate, let me know.
 
 As always - feel free to use but don't blame me if things go wrong. You have been warned!

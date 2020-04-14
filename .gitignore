@@ -1,5 +1,4 @@
 /.vscode/.ropeproject
-/.vscode/settings.json
 /.idea
 __pycache__
 .pytest_cache

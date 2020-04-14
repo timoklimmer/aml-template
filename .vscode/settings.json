@@ -1,0 +1,49 @@
+{
+    "outline.showArrays": false,
+    "outline.showBooleans": false,
+    "outline.showEnumMembers": false,
+    "outline.showFiles": false,
+    "outline.showKeys": false,
+    "outline.showModules": false,
+    "outline.showNamespaces": false,
+    "outline.showNull": false,
+    "outline.showNumbers": false,
+    "outline.showObjects": false,
+    "outline.showOperators": false,
+    "outline.showPackages": false,
+    "outline.showProperties": false,
+    "outline.showStrings": false,
+    "outline.showFields": false,
+    "outline.showEnums": false,
+    "outline.showTypeParameters": false,
+    "outline.showVariables": false,
+    "explorer.sortOrder": "type",
+    "editor.rulers": [
+        {
+          "column": 120,
+          "color": "#333333"
+        }
+      ],
+    "python.formatting.provider": "black",
+    "python.formatting.blackArgs": [
+        "--line-length=120"
+    ],
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+    "python.linting.pylintArgs": [
+        "--max-line-length=120",
+        "--disable=invalid-name,no-member,bare-except,broad-except,redefined-outer-name,fixme,missing-docstring,abstract-class-instantiated,missing-final-newline,ungrouped-imports,global-statement"
+    ],
+    "python.linting.pycodestyleEnabled": true,
+    "python.linting.pycodestyleArgs": [
+        "--ignore=E501,E231,E722,E302,W391,E265"
+    ],
+    "python.testing.pytestArgs": [
+        "."
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.nosetestsEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "python.dataScience.notebookFileRoot": "${workspaceFolder}",
+    "python.dataScience.textOutputLimit": 0,
+}

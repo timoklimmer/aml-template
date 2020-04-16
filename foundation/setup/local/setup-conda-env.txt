@@ -8,6 +8,7 @@ conda activate aml_template
 conda install --yes pylint black yapf rope tqdm matplotlib pillow pandas xlrd pytest
 
 # install environs
+# note: ensure you have the latest version as some older versions have a bug which blocks the code provided here
 pip install --upgrade environs
 
 # install AzureML SDK
@@ -22,9 +23,19 @@ az extension add -n azure-cli-ml
 # optional: AzureML Open Datasets
 pip install azureml-opendatasets
 
-# optional: install pyspark (TODO: commands might not be complete)
+# optional: install pyspark or Databricks Connect
 conda install --yes "openjdk>=8,<9"
-conda install --yes pyspark
+# (PowerShell begin, need to convert for Unix/Mac or use PowerShell Core)
+New-Item -Path "C:\Hadoop\Bin" -ItemType Directory -Force
+Invoke-WebRequest -Uri https://github.com/steveloughran/winutils/raw/master/hadoop-2.7.1/bin/winutils.exe -OutFile "C:\Hadoop\Bin\winutils.exe"
+[Environment]::SetEnvironmentVariable("HADOOP_HOME", "C:\Hadoop", "Machine")
+# (PowerShell end)
+# pyspark XOR(!) databricks-connect, do NOT install them in parallel!
+# pyspark
+pip install pyspark
+# databricks-connect
+pip install databricks-connect==x.x., see https://docs.microsoft.com/de-de/azure/databricks/dev-tools/databricks-connect
+databricks-connect configure
 
 # optional: install TensorFlow GPU
 conda install --yes tensorflow-gpu

@@ -24,13 +24,19 @@ az extension add -n azure-cli-ml
 pip install azureml-opendatasets
 
 # optional: install pyspark or Databricks Connect
+# 1. install Open JDK (in case you have no other Java 8 JDK yet)
+# note: this will show some env variable setting commands whenever the environment is activated.
+#       to get rid of them being displayed, adjust the scripts in <conda env>/etc/conda/activate.d and deactivate.d
+#       and add a @echo off in front (Windows) or > /dev/null 2>&1 add the end of each command (Linux)
 conda install --yes "openjdk>=8,<9"
+# 2. install some required files for Spark
 # (PowerShell begin, need to convert for Unix/Mac or use PowerShell Core)
 New-Item -Path "C:\Hadoop\Bin" -ItemType Directory -Force
 Invoke-WebRequest -Uri https://github.com/steveloughran/winutils/raw/master/hadoop-2.7.1/bin/winutils.exe -OutFile "C:\Hadoop\Bin\winutils.exe"
 [Environment]::SetEnvironmentVariable("HADOOP_HOME", "C:\Hadoop", "Machine")
 # (PowerShell end)
-# pyspark XOR(!) databricks-connect, do NOT install them in parallel!
+# 3. pyspark XOR(!) databricks-connect, do NOT install them in parallel!
+# use two conda environments if you need both pyspark and databricks-connect
 # pyspark
 pip install pyspark
 # databricks-connect
@@ -38,6 +44,7 @@ pip install databricks-connect==x.x., see https://docs.microsoft.com/de-de/azure
 databricks-connect configure
 
 # optional: install TensorFlow GPU
+# note: if your machine does not have a GPU, use tensorflow instead of tensorflow-gpu
 conda install --yes tensorflow-gpu
 
 # optional: install VS.Code

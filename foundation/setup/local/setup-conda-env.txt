@@ -1,5 +1,8 @@
 # run these commands on your dev notebook
 
+# install git and nodejs
+# note: it's best to use the setups provided at the respective homepages
+
 # create and activate environment
 conda create --yes -n aml_template python=3.6
 conda activate aml_template

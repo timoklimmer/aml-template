@@ -1,4 +1,5 @@
 {
+    "editor.minimap.enabled": false,
     "outline.showArrays": false,
     "outline.showBooleans": false,
     "outline.showEnumMembers": false,

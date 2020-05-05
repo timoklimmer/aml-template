@@ -24,6 +24,7 @@ os.makedirs(output_dir, exist_ok=True)
 
 
 # --- download and save data to output directory
+# note: we also could have used AzureML's dataset feature here and register/version the dataset
 print("Downloading and saving data...")
 files_to_download = {
     "t10k-images-idx3-ubyte.gz": "https://github.com/zalandoresearch/fashion-mnist/raw/master/data/fashion/t10k"

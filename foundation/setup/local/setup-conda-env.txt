@@ -8,7 +8,7 @@ conda create --yes -n aml_template python=3.6
 conda activate aml_template
 
 # install some commons
-conda install --yes pylint black yapf rope tqdm matplotlib pillow pandas xlrd pytest
+conda install --yes pylint black yapf rope tqdm matplotlib pillow xlrd pytest
 
 # install environs
 # note: ensure you have the latest version as some older versions have a bug which blocks the code provided here
@@ -17,11 +17,15 @@ pip install --upgrade environs
 # install AzureML SDK
 pip install --upgrade azureml-sdk[accel-models,automl,contrib,explain,interpret,notebooks,services,tensorboard]
 
+# install a newer version of pandas
+conda install pandas
+
 # install Azure CLI
 pip install --upgrade azure-cli
 
-# install Azure CLI ML extension
+# install or update Azure CLI ML extension
 az extension add -n azure-cli-ml
+az extension update -n azure-cli-ml
 
 # optional: AzureML Open Datasets
 pip install azureml-opendatasets

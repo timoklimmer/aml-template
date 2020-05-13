@@ -1,4 +1,4 @@
-# **amls-template**
+# **aml-template**
 
 A lightweight and (hopefully) easy-to-use template for Azure Machine Learning Services.
 

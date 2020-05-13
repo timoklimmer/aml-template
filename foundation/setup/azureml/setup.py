@@ -30,6 +30,7 @@ resource_group = env("RESOURCE_GROUP")
 resource_group_create_if_not_exists = env.bool("RESOURCE_GROUP_CREATE_IF_NOT_EXISTS")
 workspace_name = env("WORKSPACE_NAME")
 workspace_region = env("WORKSPACE_REGION")
+workspace_hbi = env.bool("WORKSPACE_HBI")
 
 # - service principals
 # SP for deploying a model as webservice
@@ -99,11 +100,13 @@ workspace = Workspace.create(
     location=workspace_region,
     create_resource_group=resource_group_create_if_not_exists,
     sku="enterprise",
+    hbi_workspace=workspace_hbi,
     exist_ok=True,
     show_output=True,
 )
 
 # secrets
+print("Updating Key Vault...")
 keyvault = workspace.get_default_keyvault()
 # note: Key Vault allows only key names that follow the ^[0-9a-zA-Z-]+$ pattern.
 #       therefore, we replace the _ chars against -

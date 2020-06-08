@@ -11,7 +11,7 @@ conda activate aml_template
 conda install --yes pylint black yapf rope tqdm matplotlib pillow xlrd pytest
 
 # install environs
-# note: ensure you have the latest version as some older versions have a bug which blocks the code provided here
+# note: ensure you have at least version 8.0.0 as the older versions have a bug with which the code here does not work
 pip install --upgrade environs
 
 # install AzureML SDK

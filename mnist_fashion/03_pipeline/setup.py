@@ -15,20 +15,6 @@ from azureml.train.dnn import TensorFlow
 from environs import Env
 
 
-# temporary workaround function until a bug in environs.read_env(...) is fixed
-def find_env_in_parent_directories(env_file_name):
-    import os
-    import re
-
-    parents = re.split(r"[\\/]", os.path.abspath(env_file_name))[:-1]
-    depth = len(parents)
-    while depth >= 0:
-        path_to_check = "/".join(parents[:depth]) + f"/{env_file_name}"
-        if os.path.isfile(path_to_check):
-            return path_to_check
-        depth -= 1
-
-
 # --- define and parse script arguments
 parser = argparse.ArgumentParser(allow_abbrev=False)
 trigger_after_publish_parser = parser.add_mutually_exclusive_group(required=True)
@@ -60,7 +46,7 @@ schedule = args.schedule
 # --- load configuration
 print("Loading configuration...")
 env = Env()
-env.read_env(find_env_in_parent_directories("foundation.env"))
+env.read_env("foundation.env")
 
 subscription_id = env("SUBSCRIPTION_ID")
 resource_group = env("RESOURCE_GROUP")

@@ -11,20 +11,6 @@ from azureml.core.authentication import (
 from environs import Env
 
 
-# temporary workaround function until a bug in environs.read_env(...) is fixed
-def find_env_in_parent_directories(env_file_name):
-    import os
-    import re
-
-    parents = re.split(r"[\\/]", os.path.abspath(env_file_name))[:-1]
-    depth = len(parents)
-    while depth >= 0:
-        path_to_check = "/".join(parents[:depth]) + f"/{env_file_name}"
-        if os.path.isfile(path_to_check):
-            return path_to_check
-        depth -= 1
-
-
 print("Triggering pipeline...")
 
 
@@ -86,8 +72,8 @@ if auth_type == "interactive":
     auth = InteractiveLoginAuthentication()
 if auth_type == "service_principal":
     env = Env()
-    env.read_env(find_env_in_parent_directories("foundation.env"))
-    env.read_env(find_env_in_parent_directories("service-principals.env"))
+    env.read_env("foundation.env")
+    env.read_env("service-principals.env")
     tenant_id = args.tenant_id if args.tenant_id else env("TRIGGER_AML_PIPELINE_SP_TENANT_ID")
     service_principal_id = (
         args.service_principal_id if args.service_principal_id else env("TRIGGER_AML_PIPELINE_SP_APP_ID")

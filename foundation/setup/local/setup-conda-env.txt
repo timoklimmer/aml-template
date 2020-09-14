@@ -1,84 +1,80 @@
-# run these commands on your dev notebook
+: run these commands on your dev notebook
 
-# install git and nodejs
-# note: it's best to use the setups provided at the respective homepages
+: install git and nodejs
+: note: it's best to use the setups provided at the respective homepages
 
-# create and activate environment
+: create and activate environment
 conda create --yes -n aml_template python=3.6
 conda activate aml_template
 
-# install some commons
+: install some commons
 conda install --yes pylint black yapf rope tqdm matplotlib pillow xlrd pytest
 
-# install environs
-# note: ensure you have at least version 8.0.0 as the older versions have a bug with which the code here does not work
+: install environs
+: note: ensure you have at least version 8.0.0 as the older versions have a bug with which the code here does not work
 pip install --upgrade environs
 
-# install AzureML SDK
+: install AzureML SDK
 pip install --upgrade azureml-sdk[accel-models,automl,contrib,explain,interpret,notebooks,services,tensorboard]
+pip install --upgrade azureml-defaults
 
-# install a newer version of pandas
-conda install pandas
+: install a newer version of pandas
+pip install --upgrade pandas
 
-# install Azure CLI
+: install Azure CLI
 pip install --upgrade azure-cli
 
-# install or update Azure CLI ML extension
+: install or update Azure CLI ML extension
 az extension add -n azure-cli-ml
 az extension update -n azure-cli-ml
 
-# optional: AzureML Open Datasets
-pip install azureml-opendatasets
-
-# optional: install pyspark or Databricks Connect
-# 1. install Open JDK (in case you have no other Java 8 JDK yet)
-# note: this will show some env variable setting commands whenever the environment is activated.
-#       to get rid of them being displayed, adjust the scripts in <conda env>/etc/conda/activate.d and deactivate.d
-#       and add a @echo off in front (Windows) or > /dev/null 2>&1 add the end of each command (Linux)
+: optional: install pyspark or Databricks Connect
+: 1. install Open JDK (in case you have no other Java 8 JDK yet)
+: note: this will show some env variable setting commands whenever the environment is activated.
+:       to get rid of them being displayed, adjust the scripts in <conda env>/etc/conda/activate.d and deactivate.d
+:       and add a @echo off in front (Windows) or > /dev/null 2>&1 add the end of each command (Linux).
+:       if you encounter an ip address issue when startin pyspark, you might be able to resolve it by setting the
+:       SPARK_LOCAL_IP environment variable to 127.0.0.1 (ideally in the activate.d script).
 conda install --yes "openjdk>=8,<9"
-# 2. install some required files for Spark
-# (PowerShell begin, need to convert for Unix/Mac or use PowerShell Core)
+: 2. install some required files for Spark
+: (PowerShell begin, need to convert for Unix/Mac or use PowerShell Core)
 New-Item -Path "C:\Hadoop\Bin" -ItemType Directory -Force
 Invoke-WebRequest -Uri https://github.com/steveloughran/winutils/raw/master/hadoop-2.7.1/bin/winutils.exe -OutFile "C:\Hadoop\Bin\winutils.exe"
 [Environment]::SetEnvironmentVariable("HADOOP_HOME", "C:\Hadoop", "Machine")
-# (PowerShell end)
-# 3. pyspark XOR(!) databricks-connect, do NOT install them in parallel!
-# use two conda environments if you need both pyspark and databricks-connect
-# pyspark
+: (PowerShell end)
+: 3. pyspark XOR(!) databricks-connect, do NOT install them in parallel!
+: use two conda environments if you need both pyspark and databricks-connect
+: for pyspark:
 pip install pyspark
-# databricks-connect
+: for databricks-connect:
 pip install databricks-connect==x.x., see https://docs.microsoft.com/de-de/azure/databricks/dev-tools/databricks-connect
 databricks-connect configure
 
-# optional: install TensorFlow GPU
-# note: if your machine does not have a GPU, use tensorflow instead of tensorflow-gpu
+: optional: install TensorFlow GPU
+: note: if your machine does not have a GPU, use tensorflow instead of tensorflow-gpu
 conda install --yes tensorflow-gpu
 
-# optional: install VS.Code
-## - https://code.visualstudio.com/download
-## - AzureML extension
+: optional: install VS.Code
+:: - https://code.visualstudio.com/download
+:: - AzureML extension
 
-# optional: install PyCharm
-## if rather want to use PyCharm, feel free to use PyCharm
+: optional: install PyCharm
+:: if rather want to use PyCharm, feel free to use PyCharm
 
-# optional: install JupyterLab
-conda install -y jupyterlab==1.2.6
-## install TOC and collapsible headings extensions
+: optional: install JupyterLab
+conda install -y jupyterlab
+:: install TOC and collapsible headings extensions
 jupyter labextension install @jupyterlab/toc --no-build
 jupyter labextension install @aquirdturtle/collapsible_headings --no-build
-## install code-formatter extension
-## note: using code-formatter version 1.1.0 to make it work with JupyterLab 1.2.6
-##       version >=1.2.0 is for JupyterLab 2+
-conda install -y -c conda-forge black autopep8 yapf isort jupyterlab_code_formatter==1.1.0
-jupyter labextension install @ryantam626/jupyterlab_code_formatter@1.1.0 --no-build
+conda install -y -c conda-forge black autopep8 yapf isort jupyterlab_code_formatter
+jupyter labextension install @ryantam626/jupyterlab_code_formatter --no-build
 jupyter serverextension enable --py jupyterlab_code_formatter
 python -c "import black; black.CACHE_DIR.mkdir(parents=True, exist_ok=True)"
-## build extensions (be warned - this can take a while to complete...)
 jupyter lab build
 
-# login to Azure
-# notes: - if you have multiple subscriptions, you can use az account show and az account set to set the right subscription
-#        - your login will be kept. you will still be logged in after a reboot.
+: login to Azure
+: notes: - if you have multiple subscriptions, you can use az account show and az account set to set the right subscription
+:        - your login will be kept. you will still be logged in after a reboot.
 az login
 
-# restart to ensure that the new conda environment is properly loaded
+: restart to ensure that the new conda environment is properly loaded

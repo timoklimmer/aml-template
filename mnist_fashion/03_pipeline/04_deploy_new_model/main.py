@@ -50,11 +50,11 @@ if run.id.startswith("OfflineRun"):
 
     env = Env()
     env.read_env("foundation.env")
-    subscription_id = env("SUBSCRIPTION_ID")
+    azure_subscription_id = env("AZURE_SUBSCRIPTION_ID")
     resource_group = env("RESOURCE_GROUP")
     workspace_name = env("WORKSPACE_NAME")
     workspace = Workspace(
-        subscription_id=subscription_id, resource_group=resource_group, workspace_name=workspace_name,
+        subscription_id=azure_subscription_id, resource_group=resource_group, workspace_name=workspace_name,
     )
 else:
     workspace = run.experiment.workspace

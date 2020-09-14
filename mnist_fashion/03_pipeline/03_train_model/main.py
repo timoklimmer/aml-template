@@ -3,7 +3,6 @@
 import argparse
 import os
 import os.path
-import time
 
 import jsonpickle
 import matplotlib.pyplot as plt
@@ -144,7 +143,11 @@ def plot_image(i, predictions_array, true_label, img):
     else:
         color = "red"
     plt.xlabel(
-        "{} {:2.0f}% ({})".format(labels[predicted_label], 100 * np.max(predictions_array), labels[true_label],),
+        "{} {:2.0f}% ({})".format(
+            labels[predicted_label],
+            100 * np.max(predictions_array),
+            labels[true_label],
+        ),
         color=color,
     )
 
@@ -179,13 +182,15 @@ print("Saving and registering model...")
 model_path = f"outputs/{MODEL_NAME}"
 os.mkdir(model_path)
 model.save(f"{model_path}/{NN_FILE_NAME}")
+run.upload_file(f"{model_path}/{NN_FILE_NAME}", f"{model_path}/{NN_FILE_NAME}")
 with open(f"{model_path}/{LABELS_FILE_NAME}", "w") as labels_file:
     labels_file.write(jsonpickle.encode(labels))
-time.sleep(5)
+run.upload_file(f"{model_path}/{LABELS_FILE_NAME}", f"{model_path}/{NN_FILE_NAME}")
 run.register_model(
-    model_name=MODEL_NAME, model_path=model_path, tags={"Final Test Accuracy": str(final_test_accuracy)},
+    model_name=MODEL_NAME,
+    model_path=model_path,
+    tags={"Final Test Accuracy": str(final_test_accuracy)},
 )
-
 
 # --- Done
 print("Done.")

@@ -11,7 +11,7 @@ env.read_env("foundation.env")
 env.read_env("service-principals.env")
 
 # - subscription, resource group and workspace
-subscription_id = env("SUBSCRIPTION_ID")
+azure_subscription_id = env("AZURE_SUBSCRIPTION_ID")
 resource_group = env("RESOURCE_GROUP")
 resource_group_create_if_not_exists = env.bool("RESOURCE_GROUP_CREATE_IF_NOT_EXISTS")
 workspace_name = env("WORKSPACE_NAME")
@@ -75,13 +75,13 @@ aks_cluster_purpose = env("AKS_CLUSTER_PURPOSE", None)
 
 # workspace
 print("Setting up workspace...")
-print(f"Subscription ID : {subscription_id}")
+print(f"Subscription ID : {azure_subscription_id}")
 print(f"Resource Group  : {resource_group}")
 print(f"Region          : {workspace_region}")
 print(f"Workspace Name  : {workspace_name}")
 workspace = Workspace.create(
     name=workspace_name,
-    subscription_id=subscription_id,
+    subscription_id=azure_subscription_id,
     resource_group=resource_group,
     location=workspace_region,
     create_resource_group=resource_group_create_if_not_exists,

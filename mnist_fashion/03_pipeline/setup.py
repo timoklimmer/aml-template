@@ -48,7 +48,7 @@ print("Loading configuration...")
 env = Env()
 env.read_env("foundation.env")
 
-subscription_id = env("SUBSCRIPTION_ID")
+azure_subscription_id = env("AZURE_SUBSCRIPTION_ID")
 resource_group = env("RESOURCE_GROUP")
 workspace_name = env("WORKSPACE_NAME")
 workspace_region = env("WORKSPACE_REGION")
@@ -57,7 +57,7 @@ gpu_cluster_name = env("GPU_BATCH_CLUSTER_NAME")
 
 # --- get workspace, compute target, run config
 print("Getting workspace and compute target...")
-workspace = Workspace(subscription_id=subscription_id, resource_group=resource_group, workspace_name=workspace_name,)
+workspace = Workspace(subscription_id=azure_subscription_id, resource_group=resource_group, workspace_name=workspace_name,)
 compute_target = ComputeTarget(workspace=workspace, name=gpu_cluster_name)
 run_config = RunConfiguration(
     conda_dependencies=CondaDependencies.create(

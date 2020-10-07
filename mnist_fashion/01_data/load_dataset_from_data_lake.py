@@ -25,6 +25,9 @@ dataset = Dataset.File.from_files(path=datastore_paths)
 # register the dataset to enable later reuse
 dataset.register(workspace, "mnist-fashion", "Sample dataset", create_new_version=True)
 
+# get the dataset (for the case we have no dataset instance at this point)
+dataset = Dataset.get_by_name(workspace=workspace, name="mnist-fashion")
+
 # download the files to local folder
 # note: this is only one of multiple options. for instance, on Unix machines, the dataset can also be mounted
 directory_of_this_script = os.path.dirname(os.path.realpath(__file__))

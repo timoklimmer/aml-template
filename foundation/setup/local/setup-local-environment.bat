@@ -57,7 +57,7 @@ call jupyter serverextension enable --py jupyterlab_code_formatter
 call python -c "import black; black.CACHE_DIR.mkdir(parents=True, exist_ok=True)"
 call jupyter lab build
 
-: install Azure CLI
+: install Azure CLI and AzureML SDK for Python
 pip install --use-feature=2020-resolver --upgrade azure-cli 
 : install AzureML SDK for Python and Azure CLI ML extension
 : see https://pypi.org/user/amlpypi for a complete list of available packages, there might be more of interest for you

@@ -14,18 +14,13 @@ from tensorflow import keras
 print("Training model...")
 
 
-# --- constants
-MODEL_NAME = "mnist-fashion"
-NN_FILE_NAME = "neural-network.h5"
-LABELS_FILE_NAME = "labels.jsonpickle"
-
-
 # --- initialization
 print("Initialization...")
 # - define and parse script arguments
 parser = argparse.ArgumentParser(allow_abbrev=False)
-parser.add_argument("--input_dir", type=str, required=True, help="input directory")
+parser.add_argument("--input-dir", type=str, required=True, help="input directory")
 parser.add_argument("--epochs", type=int, required=False, default=10, help="number of epochs")
+parser.add_argument("--batch-size", type=int, required=False, default=32, help="batch size")
 parser.add_argument(
     "--hidden-neurons", type=int, required=False, default=128, help=("number of neurons in the hidden layer")
 )
@@ -33,6 +28,9 @@ args = parser.parse_args()
 input_dir = args.input_dir
 epochs = args.epochs
 hidden_neurons = args.hidden_neurons
+batch_size = args.batch_size
+print(f"Epochs         : {epochs}")
+print(f"Hidden neurons : {hidden_neurons} ")
 # - get run context
 run = Run.get_context()
 
@@ -99,13 +97,16 @@ print("Training model...")
 
 
 class LogRunMetrics(keras.callbacks.Callback):
+    # pylint: disable=arguments-differ
     def on_epoch_end(self, epoch, log):
-        run.log("Epoch", epoch)
-        run.log("Loss", log["loss"])
-        run.log("Accuracy", log["accuracy"])
+        run.log("epoch", epoch)
+        run.log("loss", log["loss"])
+        run.log("accuracy", log["accuracy"])
+
+    # pylint: enable=arguments-differ
 
 
-history = model.fit(train_images, train_labels, epochs=epochs, callbacks=[LogRunMetrics()])
+history = model.fit(train_images, train_labels, epochs=epochs, batch_size=batch_size, callbacks=[LogRunMetrics()])
 
 
 # --- evaluate the model
@@ -181,20 +182,24 @@ plt.tight_layout()
 run.log_image("Predictions On Test Set", plot=plt)
 
 
-# --- save and register model
-print("Saving and registering model...")
-model_path = f"outputs/{MODEL_NAME}"
+# --- save model to AzureML
+print("Saving model...")
+
+model_path = f"outputs/model"
+neural_net_file_path = f"{model_path}/neural-network.h5"
+labels_file_path = f"{model_path}/labels.jsonpickle"
+
 os.mkdir(model_path)
-model.save(f"{model_path}/{NN_FILE_NAME}")
-run.upload_file(f"{model_path}/{NN_FILE_NAME}", f"{model_path}/{NN_FILE_NAME}")
-with open(f"{model_path}/{LABELS_FILE_NAME}", "w") as labels_file:
+
+# neural net
+model.save(neural_net_file_path)
+run.upload_file(neural_net_file_path, neural_net_file_path)
+
+# labels
+with open(labels_file_path, "w") as labels_file:
     labels_file.write(jsonpickle.encode(labels))
-run.upload_file(f"{model_path}/{LABELS_FILE_NAME}", f"{model_path}/{NN_FILE_NAME}")
-run.register_model(
-    model_name=MODEL_NAME,
-    model_path=model_path,
-    tags={"Final Test Accuracy": str(final_test_accuracy)},
-)
+run.upload_file(labels_file_path, labels_file_path)
+
 
 # --- Done
 print("Done.")

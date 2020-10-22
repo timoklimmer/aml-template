@@ -14,8 +14,8 @@ print("Transforming data...")
 print("Initialization...")
 # - define and parse script arguments
 parser = argparse.ArgumentParser(allow_abbrev=False)
-parser.add_argument("--input_dir", type=str, required=True, help="input directory")
-parser.add_argument("--output_dir", type=str, required=True, help="output directory")
+parser.add_argument("--input-dir", type=str, required=True, help="input directory")
+parser.add_argument("--output-dir", type=str, required=True, help="output directory")
 args = parser.parse_args()
 input_dir = args.input_dir
 output_dir = args.output_dir

@@ -1,19 +1,26 @@
 """Creates and deploys the model training and deployment pipeline."""
 
+# pylint: disable=unused-import
 import argparse
 
 from azureml.core import Experiment, Workspace
 from azureml.core.compute import ComputeTarget
-from azureml.core.runconfig import (
-    CondaDependencies,
-    RunConfiguration,
-)
+from azureml.core.runconfig import CondaDependencies, RunConfiguration
 from azureml.pipeline.core import Pipeline, PipelineData, PipelineEndpoint
 from azureml.pipeline.core.schedule import Schedule, ScheduleRecurrence
-from azureml.pipeline.steps import EstimatorStep, PythonScriptStep
+from azureml.pipeline.steps import EstimatorStep, HyperDriveStep, PythonScriptStep
 from azureml.train.dnn import TensorFlow
+from azureml.train.hyperdrive import (
+    BanditPolicy,
+    BayesianParameterSampling,
+    HyperDriveConfig,
+    PrimaryMetricGoal,
+    RandomParameterSampling,
+    choice,
+)
 from environs import Env
 
+# pylint: enable=unused-import
 
 # --- define and parse script arguments
 parser = argparse.ArgumentParser(allow_abbrev=False)
@@ -33,10 +40,16 @@ trigger_after_publish_parser.add_argument(
 
 schedule_parser = parser.add_mutually_exclusive_group(required=True)
 schedule_parser.add_argument(
-    "--schedule", dest="schedule", action="store_true", help="Attaches the schedule to the pipeline.",
+    "--schedule",
+    dest="schedule",
+    action="store_true",
+    help="Attaches the schedule to the pipeline.",
 )
 schedule_parser.add_argument(
-    "--no-schedule", dest="schedule", action="store_false", help="Skips attaching the schedule to the pipeline.",
+    "--no-schedule",
+    dest="schedule",
+    action="store_false",
+    help="Skips attaching the schedule to the pipeline.",
 )
 args = parser.parse_args()
 trigger_after_publish = args.trigger_after_publish
@@ -57,7 +70,11 @@ gpu_cluster_name = env("GPU_BATCH_CLUSTER_NAME")
 
 # --- get workspace, compute target, run config
 print("Getting workspace and compute target...")
-workspace = Workspace(subscription_id=azure_subscription_id, resource_group=resource_group, workspace_name=workspace_name,)
+workspace = Workspace(
+    subscription_id=azure_subscription_id,
+    resource_group=resource_group,
+    workspace_name=workspace_name,
+)
 compute_target = ComputeTarget(workspace=workspace, name=gpu_cluster_name)
 run_config = RunConfiguration(
     conda_dependencies=CondaDependencies.create(
@@ -69,8 +86,9 @@ run_config = RunConfiguration(
 run_config.environment.docker.enabled = True
 # recommendation: use a fixed image in production to avoid sudden surprises
 #                 check DEFAULT_CPU_IMAGE or DEFAULT_GPU_IMAGE for the newest image
+# from azureml.core.runconfig import DEFAULT_CPU_IMAGE, DEFAULT_GPU_IMAGE
 run_config.environment.docker.base_image = (
-    "mcr.microsoft.com/azureml/base-gpu:intelmpi2018.3-cuda10.0-cudnn7-ubuntu16.04"
+    "mcr.microsoft.com/azureml/intelmpi2018.3-cuda10.0-cudnn7-ubuntu16.04:20200821.v1"
 )
 run_config.environment.spark.precache_packages = False
 
@@ -80,7 +98,10 @@ run_config.environment.spark.precache_packages = False
 print("Defining pipeline steps...")
 
 # - Extract Data
-extracted_data_dir = PipelineData("extracted_data", is_directory=True,)
+extracted_data_dir = PipelineData(
+    "extracted_data",
+    is_directory=True,
+)
 extract_data_step = PythonScriptStep(
     name="Extract Data",
     script_name="main.py",
@@ -88,12 +109,15 @@ extract_data_step = PythonScriptStep(
     compute_target=compute_target,
     runconfig=run_config,
     outputs=[extracted_data_dir],
-    arguments=["--output_dir", extracted_data_dir],
+    arguments=["--output-dir", extracted_data_dir],
     allow_reuse=False,
 )
 
 # - Transform Data
-transformed_data_dir = PipelineData(name="transformed_data", is_directory=True,)
+transformed_data_dir = PipelineData(
+    name="transformed_data",
+    is_directory=True,
+)
 transform_data_step = PythonScriptStep(
     name="Transform Data",
     script_name="main.py",
@@ -102,34 +126,82 @@ transform_data_step = PythonScriptStep(
     runconfig=run_config,
     inputs=[extracted_data_dir],
     outputs=[transformed_data_dir],
-    arguments=["--input_dir", extracted_data_dir, "--output_dir", transformed_data_dir],
+    arguments=["--input-dir", extracted_data_dir, "--output-dir", transformed_data_dir],
     allow_reuse=False,
 )
 
 # - Train Model
-# note: see and use the HyperDriveStep for a model training which uses hyperdrive tuning
-train_model_step = EstimatorStep(
+# more infos on estimators at: https://docs.microsoft.com/en-us/python/api/azureml-train-core/azureml.train.estima
+# tor.estimator. The example below uses the pre-defined TensorFlow estimator but there is also other estimators and the
+# option to build your own estimator.
+
+# # option 1 - no hyperparameter optimization
+# train_model_step = EstimatorStep(
+#     name="Train Model",
+#     estimator=TensorFlow(
+#         entry_script="main.py",
+#         source_directory="03_train_model",
+#         compute_target=compute_target,
+#         framework_version="2.0",
+#         conda_packages=[],
+#         pip_packages=["matplotlib"],
+#         use_gpu=True,
+#     ),
+#     compute_target=compute_target,
+#     inputs=[transformed_data_dir],
+#     estimator_entry_script_arguments=["--input-dir", transformed_data_dir],
+#     allow_reuse=False,
+# )
+
+# option 2 - hyperparameter optimization using HyperDrive
+# - see https://docs.microsoft.com/en-us/azure/machine-learning/how-to-tune-hyperparameters for more details and further
+#   options wrt. hyperparameter selection strategies and termination policies.
+# - also check if the settings below are valid in case you use this in a production context
+train_model_step = HyperDriveStep(
     name="Train Model",
-    estimator=TensorFlow(
-        entry_script="main.py",
-        source_directory="03_train_model",
-        compute_target=compute_target,
-        framework_version="2.0",
-        conda_packages=[],
-        pip_packages=["matplotlib"],
-        use_gpu=True,
+    hyperdrive_config=HyperDriveConfig(
+        estimator=TensorFlow(
+            entry_script="main.py",
+            source_directory="03_train_model",
+            compute_target=compute_target,
+            framework_version="2.2",
+            conda_packages=[],
+            pip_packages=["matplotlib"],
+            use_gpu=True,
+        ),
+        hyperparameter_sampling=RandomParameterSampling(
+            {
+                "--epochs": choice(10, 25, 50, 100),
+                "--hidden-neurons": choice(10, 50, 200, 300, 500),
+                "--batch-size": choice(32, 64, 128, 256),
+            }
+        ),
+        policy=BanditPolicy(evaluation_interval=2, slack_factor=0.1),
+        primary_metric_name="accuracy",
+        primary_metric_goal=PrimaryMetricGoal.MAXIMIZE,
+        max_total_runs=20,  # you likely need more for production runs
+        max_concurrent_runs=4,
+        max_duration_minutes=120,
     ),
-    compute_target=compute_target,
     inputs=[transformed_data_dir],
-    estimator_entry_script_arguments=["--input_dir", transformed_data_dir],
-    allow_reuse=False,
+    estimator_entry_script_arguments=["--input-dir", transformed_data_dir],
+)
+
+# - Register Best Model
+register_best_model_step = PythonScriptStep(
+    name="Register Best Model",
+    script_name="main.py",
+    source_directory="04_register_best_model",
+    compute_target=compute_target,
+    runconfig=run_config,
+    allow_reuse=False
 )
 
 # - Deploy New Model
 deploy_new_model_step = PythonScriptStep(
     name="Deploy New Model",
     script_name="main.py",
-    source_directory="04_deploy_new_model",
+    source_directory="05_deploy_new_model",
     compute_target=compute_target,
     runconfig=run_config,
     allow_reuse=False,
@@ -147,9 +219,14 @@ pipeline_steps = [
     extract_data_step,
     transform_data_step,
     train_model_step,
+    register_best_model_step,
     deploy_new_model_step,
 ]
-pipeline = Pipeline(workspace=workspace, steps=pipeline_steps, description=pipeline_description,)
+pipeline = Pipeline(
+    workspace=workspace,
+    steps=pipeline_steps,
+    description=pipeline_description,
+)
 pipeline.validate()
 
 published_pipeline = pipeline.publish(

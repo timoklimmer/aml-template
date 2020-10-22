@@ -13,7 +13,7 @@ print("Extracting data...")
 print("Initialization...")
 # - define and parse script arguments
 parser = argparse.ArgumentParser(allow_abbrev=False)
-parser.add_argument("--output_dir", type=str, required=True, help="output directory")
+parser.add_argument("--output-dir", type=str, required=True, help="output directory")
 args = parser.parse_args()
 output_dir = args.output_dir
 # - get run context

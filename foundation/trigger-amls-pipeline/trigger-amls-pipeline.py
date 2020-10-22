@@ -33,25 +33,25 @@ print("Initialization...")
 parser = argparse.ArgumentParser(allow_abbrev=False)
 parser.add_argument("--endpoint", type=str, required=True, help="pipeline endpoint")
 parser.add_argument(
-    "--parameter_assignments", metavar="KEY=VALUE", nargs="+", action=ParseDict,
+    "--parameter-assignments", metavar="KEY=VALUE", nargs="+", action=ParseDict,
 )
 parser.add_argument(
-    "--auth_type",
+    "--auth-type",
     choices=["interactive", "service_principal", "msi"],
     required=True,
     help="Specifies the method to authenticate against AzureML Services.",
 )
 parser.add_argument(
-    "--tenant_id", type=str, required=False, help="AAD tenant ID, only needed if service principal auth is used",
+    "--tenant-id", type=str, required=False, help="AAD tenant ID, only needed if service principal auth is used",
 )
 parser.add_argument(
-    "--service_principal_id",
+    "--service-principal-id",
     type=str,
     required=False,
     help="ID of the service principal triggering, only needed if service principal auth is used",
 )
 parser.add_argument(
-    "--service_principal_secret",
+    "--service-principal-secret",
     type=str,
     required=False,
     help="Service principal secret, only needed if service principal auth is used. In production scenarios, "

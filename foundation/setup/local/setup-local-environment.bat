@@ -36,17 +36,6 @@ call conda install -y pyspark
 : pip install databricks-connect==x.x., see https://docs.microsoft.com/de-de/azure/databricks/dev-tools/databricks-connect
 : databricks-connect configure
 
-: install TensorFlow
-: note: if your machine does not have a GPU, use tensorflow instead of tensorflow-gpu
-call conda install -y tensorflow-gpu
-
-: install PyTorch
-: notes: - adjust as required, depending on your available hardware, see https://pytorch.org
-:        - this may lead to conda downgrading TensorFlow. if this is the case, install a different environment or
-:          a compatible TensorFlow/PyTorch combination which bases on the same cudatoolkit version.
-:        - commented out to avoid conflicts with TensorFlow package from conda
-: call conda install -y pytorch torchvision cudatoolkit=10.2 -c pytorch
-
 : install Jupyter Lab
 call conda install -y nodejs jupyterlab
 call jupyter labextension install @jupyterlab/toc --no-build
@@ -57,14 +46,33 @@ call jupyter serverextension enable --py jupyterlab_code_formatter
 call python -c "import black; black.CACHE_DIR.mkdir(parents=True, exist_ok=True)"
 call jupyter lab build
 
-: install Azure CLI and AzureML SDK for Python
-pip install --use-feature=2020-resolver --upgrade azure-cli 
-: install AzureML SDK for Python and Azure CLI ML extension
-: see https://pypi.org/user/amlpypi for a complete list of available packages, there might be more of interest for you
-pip install --use-feature=2020-resolver --upgrade azureml-sdk[accel-models,automl,contrib,explain,interpret,notebooks,services,tensorboard]
-pip install --use-feature=2020-resolver --upgrade azureml-defaults azureml-contrib-services azureml-datadrift azureml-explain-model azureml-train-automl azureml-widgets
-pip install --use-feature=2020-resolver --upgrade --upgrade-strategy eager azureml-sdk
-az extension add --upgrade --name azure-cli-ml
+: install Azure CLI, AzureML SDK + Azure CLI ML extension
+: Azure CLI
+call pip install --use-feature=2020-resolver azure-cli
+: AzureML SDK for Python
+: - There is more AzureML packages that might be of interest for you.
+:   See https://docs.microsoft.com/de-de/python/api/overview/azure/ml/install (incl. menu on the left) and
+:   https://pypi.org/user/amlpypi for a complete list of available packages.
+: - There is also an R SDK (not coverered here), see https://github.com/Azure/azureml-sdk-for-r
+call pip install --use-feature=2020-resolver wrapt azureml-sdk
+: TODO: install additional packages as needed
+: Azure CLI ML extension
+call az extension add --upgrade --name azure-cli-ml
+
+: install CUDA toolkit for TensorFlow and PyTorch
+: note: intentionally using 10.1 as this version is compatible with both TF 2.2. and PyTorch 1.6.
+:       change to newer versions as needed and compatibility is given.
+call conda install -y cudatoolkit=10.1
+
+: install TensorFlow
+: note: if your machine does not have a GPU, use package "tensorflow" instead of "tensorflow-gpu"
+call pip install --use-feature=2020-resolver tensorflow-gpu==2.2
+
+: install PyTorch
+: notes: - adjust as required, depending on your available hardware and other packages used, see https://pytorch.org
+:        - this may lead to conda downgrading TensorFlow. if this is the case, install a different environment or
+:          a compatible TensorFlow/PyTorch combination which bases on the same cudatoolkit version.
+call conda install -y pytorch==1.6.0 torchvision==0.7.0 -c pytorch
 
 : install our own custom Python packages, if applicable
 : TODO: complete as necessary, eg. using pip install -e <package_dir>

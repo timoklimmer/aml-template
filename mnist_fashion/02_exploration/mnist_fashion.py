@@ -44,7 +44,7 @@ def load_fashion_mnist_data(path):
     return train_images, train_labels, test_images, test_labels, labels
 
 
-mnist_fashion_data_folder = "../01_data"
+mnist_fashion_data_folder = "mnist_fashion/01_data"
 train_images, train_labels, test_images, test_labels, labels = load_fashion_mnist_data(mnist_fashion_data_folder)
 
 

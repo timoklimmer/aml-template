@@ -18,8 +18,6 @@ print("Training model...")
 MODEL_NAME = "mnist-fashion"
 NN_FILE_NAME = "neural-network.h5"
 LABELS_FILE_NAME = "labels.jsonpickle"
-# note: AML also supports hyper parameter tuning, see HyperDriveStep for more infos
-EPOCHS = 10
 
 
 # --- initialization
@@ -27,8 +25,14 @@ print("Initialization...")
 # - define and parse script arguments
 parser = argparse.ArgumentParser(allow_abbrev=False)
 parser.add_argument("--input_dir", type=str, required=True, help="input directory")
+parser.add_argument("--epochs", type=int, required=False, default=10, help="number of epochs")
+parser.add_argument(
+    "--hidden-neurons", type=int, required=False, default=128, help=("number of neurons in the hidden layer")
+)
 args = parser.parse_args()
 input_dir = args.input_dir
+epochs = args.epochs
+hidden_neurons = args.hidden_neurons
 # - get run context
 run = Run.get_context()
 
@@ -45,7 +49,7 @@ print("Defining model...")
 model = keras.Sequential(
     [
         keras.layers.Flatten(input_shape=(28, 28)),
-        keras.layers.Dense(128, activation="relu"),
+        keras.layers.Dense(hidden_neurons, activation="relu"),
         keras.layers.Dense(10, activation="softmax"),
     ]
 )
@@ -101,7 +105,7 @@ class LogRunMetrics(keras.callbacks.Callback):
         run.log("Accuracy", log["accuracy"])
 
 
-history = model.fit(train_images, train_labels, epochs=EPOCHS, callbacks=[LogRunMetrics()])
+history = model.fit(train_images, train_labels, epochs=epochs, callbacks=[LogRunMetrics()])
 
 
 # --- evaluate the model
@@ -120,7 +124,7 @@ run.log("Final Test Accuracy", final_test_accuracy)
 
 # - loss vs. accuracy image
 plt.figure(figsize=(6, 3))
-plt.title(f"Fashion MNIST with Keras ({EPOCHS} EPOCHS)", fontsize=14)
+plt.title(f"Fashion MNIST with Keras ({epochs} EPOCHS)", fontsize=14)
 plt.plot(history.history["accuracy"], "b-", label="Accuracy", lw=4, alpha=0.5)
 plt.plot(history.history["loss"], "r--", label="Loss", lw=4, alpha=0.5)
 plt.legend(fontsize=12)

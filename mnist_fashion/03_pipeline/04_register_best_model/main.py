@@ -19,13 +19,15 @@ print("Initialization...")
 # - get run context
 run = Run.get_context()
 
+
 # --- get best model
 # to get a pipeline run outside of the pipeline:
 # workspace = Workspace(<subscription id>, <resource group>, <workspace name>)
 # run = PipelineRun(workspace.experiments[<experiment name>], <run id>)
-train_model_step_run = HyperDriveStepRun(step_run=run.find_step_run("Train Model")[0])
-best_run = train_model_step_run.get_best_run_by_primary_metric()
-final_test_accuracy = best_run.get_metrics("Final Test Accuracy")
+pipeline_run = PipelineRun(run.experiment, run.parent.id)
+train_models_step_run = HyperDriveStepRun(step_run=pipeline_run.find_step_run("Train Models")[0])
+best_run = train_models_step_run.get_best_run_by_primary_metric()
+final_test_accuracy = best_run.get_metrics("Final Test Accuracy")["Final Test Accuracy"]
 
 # -- validate quality
 # TODO: if needed, check if the quality of the model is good enough for a deployment

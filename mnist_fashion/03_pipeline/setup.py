@@ -79,8 +79,11 @@ compute_target = ComputeTarget(workspace=workspace, name=gpu_cluster_name)
 run_config = RunConfiguration(
     conda_dependencies=CondaDependencies.create(
         conda_packages=[],
-        # note: see run_config.environment.add_private_pip_wheel() to use your own private packages
-        pip_packages=["azureml-defaults"],
+        # notes: - see run_config.environment.add_private_pip_wheel() to use your own private packages,
+        #        - you can also reference curated or custom environments here for simplification,
+        #          see https://docs.microsoft.com/en-us/azure/machine-learning/how-to-create-your-first-pipeline for
+        #          more details
+        pip_packages=["azureml-defaults", "azureml-pipeline-steps"],
     )
 )
 run_config.environment.docker.enabled = True
@@ -130,17 +133,20 @@ transform_data_step = PythonScriptStep(
     allow_reuse=False,
 )
 
-# - Train Model
-# more infos on estimators at: https://docs.microsoft.com/en-us/python/api/azureml-train-core/azureml.train.estima
-# tor.estimator. The example below uses the pre-defined TensorFlow estimator but there is also other estimators and the
-# option to build your own estimator.
+# - Train Models
 
-# # option 1 - no hyperparameter optimization
+# # option 1 - no hyperparameter optimization, single model without hyperparameter tuning
+# more infos on estimators at:
+# https://docs.microsoft.com/en-us/python/api/azureml-train-core/azureml.train.estimator.estimator.
+#
+# The example below uses the pre-defined TensorFlow estimator but there is also other estimators and the option to build
+# your own estimator.
+#
 # train_model_step = EstimatorStep(
 #     name="Train Model",
 #     estimator=TensorFlow(
 #         entry_script="main.py",
-#         source_directory="03_train_model",
+#         source_directory="03_train_models",
 #         compute_target=compute_target,
 #         framework_version="2.0",
 #         conda_packages=[],
@@ -157,12 +163,12 @@ transform_data_step = PythonScriptStep(
 # - see https://docs.microsoft.com/en-us/azure/machine-learning/how-to-tune-hyperparameters for more details and further
 #   options wrt. hyperparameter selection strategies and termination policies.
 # - also check if the settings below are valid in case you use this in a production context
-train_model_step = HyperDriveStep(
-    name="Train Model",
+train_models_step = HyperDriveStep(
+    name="Train Models",
     hyperdrive_config=HyperDriveConfig(
         estimator=TensorFlow(
             entry_script="main.py",
-            source_directory="03_train_model",
+            source_directory="03_train_models",
             compute_target=compute_target,
             framework_version="2.2",
             conda_packages=[],
@@ -176,10 +182,10 @@ train_model_step = HyperDriveStep(
                 "--batch-size": choice(32, 64, 128, 256),
             }
         ),
-        policy=BanditPolicy(evaluation_interval=2, slack_factor=0.1),
+        policy=BanditPolicy(evaluation_interval=3, slack_amount=0.05),
         primary_metric_name="accuracy",
         primary_metric_goal=PrimaryMetricGoal.MAXIMIZE,
-        max_total_runs=20,  # you likely need more for production runs
+        max_total_runs=20,
         max_concurrent_runs=4,
         max_duration_minutes=120,
     ),
@@ -194,8 +200,9 @@ register_best_model_step = PythonScriptStep(
     source_directory="04_register_best_model",
     compute_target=compute_target,
     runconfig=run_config,
-    allow_reuse=False
+    allow_reuse=False,
 )
+register_best_model_step.run_after(train_models_step)
 
 # - Deploy New Model
 deploy_new_model_step = PythonScriptStep(
@@ -206,7 +213,7 @@ deploy_new_model_step = PythonScriptStep(
     runconfig=run_config,
     allow_reuse=False,
 )
-deploy_new_model_step.run_after(train_model_step)
+deploy_new_model_step.run_after(register_best_model_step)
 
 # --- assemble and publish publishing pipeline
 # note: see here for infos on how to schedule the pipeline
@@ -218,7 +225,7 @@ pipeline_description = "Just a simple sample pipeline."
 pipeline_steps = [
     extract_data_step,
     transform_data_step,
-    train_model_step,
+    train_models_step,
     register_best_model_step,
     deploy_new_model_step,
 ]

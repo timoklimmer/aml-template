@@ -1,4 +1,4 @@
-"""Main script for step: Train Model"""
+"""Main script for step: Train Models"""
 
 import argparse
 import os
@@ -182,8 +182,8 @@ plt.tight_layout()
 run.log_image("Predictions On Test Set", plot=plt)
 
 
-# --- save model to AzureML
-print("Saving model...")
+# --- upload model
+print("Uploading model...")
 
 model_path = f"outputs/model"
 neural_net_file_path = f"{model_path}/neural-network.h5"

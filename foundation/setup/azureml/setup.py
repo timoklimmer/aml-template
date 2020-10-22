@@ -138,7 +138,8 @@ if some_external_blob_datastore_enabled:
 
 
 # environment(s)
-# TODO: complete as needed
+# TODO: complete as needed, note that there is also some pre-defined environments,
+# see https://docs.microsoft.com/en-us/azure/machine-learning/resource-curated-environments for more details
 
 
 # clusters

@@ -8,8 +8,8 @@ is to catalyze ML projects and help them get faster to production.
 Topic covered:
 - setting up the environment
 - exploratory data analysis
-- creating a model training pipeline
-- creating and deploying an enterprise-ready inferencing webservice.
+- creating a model training pipeline incl. hyperparameter optimization
+- creating and deploying an inferencing webservice incl. authentication and logging.
 
 AML's AutoML is not included yet but will likely be in future.
 

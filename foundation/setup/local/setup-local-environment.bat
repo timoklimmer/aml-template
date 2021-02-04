@@ -48,13 +48,13 @@ call jupyter lab build
 
 : install Azure CLI, AzureML SDK + Azure CLI ML extension
 : Azure CLI
-call pip install --use-feature=2020-resolver azure-cli
+call pip install azure-cli
 : AzureML SDK for Python
 : - There is more AzureML packages that might be of interest for you.
 :   See https://docs.microsoft.com/de-de/python/api/overview/azure/ml/install (incl. menu on the left) and
 :   https://pypi.org/user/amlpypi for a complete list of available packages.
 : - There is also an R SDK (not coverered here), see https://github.com/Azure/azureml-sdk-for-r
-call pip install --use-feature=2020-resolver wrapt azureml-sdk
+call pip install wrapt azureml-sdk
 : TODO: install additional packages as needed
 : Azure CLI ML extension
 call az extension add --upgrade --name azure-cli-ml
@@ -66,7 +66,7 @@ call conda install -y cudatoolkit=10.1
 
 : install TensorFlow
 : note: if your machine does not have a GPU, use package "tensorflow" instead of "tensorflow-gpu"
-call pip install --use-feature=2020-resolver tensorflow-gpu==2.2
+call pip install tensorflow-gpu==2.2
 
 : install PyTorch
 : notes: - adjust as required, depending on your available hardware and other packages used, see https://pytorch.org

@@ -11,7 +11,7 @@ Topic covered:
 - creating a model training pipeline incl. hyperparameter optimization
 - creating and deploying an inferencing webservice incl. authentication and logging.
 
-AML's AutoML is not included yet but will likely be in future.
+AML's AutoML is not included yet but maybe in future.
 
 The repo can be used with VS.Code, PyCharm, Jupyter Lab, Jupyter, ... whereby the experience with VS.Code is probably
 the best.
@@ -19,3 +19,9 @@ the best.
 I am open and happy to accept pull requests. If you have suggestions I should integrate, let me know.
 
 As always - feel free to use but don't blame me if things go wrong. You have been warned!
+
+> **CAUTION**
+>
+> Some of the code contained is outdated because AML has a new v2 CLI meanwhile. To get the latest and
+> greatest, check [Azure ML's documentation](https://docs.microsoft.com/en-us/azure/machine-learning) and the samples
+> [here](https://github.com/Azure/azureml-examples).

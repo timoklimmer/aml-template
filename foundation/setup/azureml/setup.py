@@ -6,7 +6,7 @@ from environs import Env
 
 # --- configuration
 print("Loading configuration...")
-env = Env()
+env = Env(expand_vars=True)
 env.read_env("foundation.env")
 env.read_env("service-principals.env")
 
@@ -96,7 +96,6 @@ workspace = Workspace.create(
     resource_group=resource_group,
     location=workspace_region,
     create_resource_group=resource_group_create_if_not_exists,
-    sku="enterprise",
     hbi_workspace=workspace_hbi,
     exist_ok=True,
     show_output=True,

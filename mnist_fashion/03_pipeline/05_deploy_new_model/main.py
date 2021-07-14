@@ -48,7 +48,7 @@ run = Run.get_context()
 if run.id.startswith("OfflineRun"):
     from environs import Env
 
-    env = Env()
+    env = Env(expand_vars=True)
     env.read_env("foundation.env")
     azure_subscription_id = env("AZURE_SUBSCRIPTION_ID")
     resource_group = env("RESOURCE_GROUP")

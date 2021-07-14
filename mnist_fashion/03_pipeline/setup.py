@@ -58,7 +58,7 @@ schedule = args.schedule
 
 # --- load configuration
 print("Loading configuration...")
-env = Env()
+env = Env(expand_vars=True)
 env.read_env("foundation.env")
 
 azure_subscription_id = env("AZURE_SUBSCRIPTION_ID")

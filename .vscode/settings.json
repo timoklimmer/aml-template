@@ -21,10 +21,13 @@
     "explorer.sortOrder": "type",
     "editor.rulers": [
         {
-          "column": 120,
-          "color": "#333333"
+            "column": 120,
+            "color": "#333333"
         }
-      ],
+    ],
+    "jupyter.notebookFileRoot": "${workspaceFolder}",
+    "jupyter.textOutputLimit": 0,
+    "python.pythonPath": "C:\\Users\\${env:USERNAME}\\Miniconda3\\envs\\aml_template\\python.exe",
     "python.formatting.provider": "black",
     "python.formatting.blackArgs": [
         "--line-length=120"
@@ -44,7 +47,5 @@
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.nosetestsEnabled": false,
-    "python.testing.pytestEnabled": true,
-    "python.dataScience.notebookFileRoot": "${workspaceFolder}",
-    "python.dataScience.textOutputLimit": 0,
+    "python.testing.pytestEnabled": true
 }

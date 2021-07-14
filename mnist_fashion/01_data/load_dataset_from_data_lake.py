@@ -13,7 +13,7 @@ from azureml.core import Workspace, Datastore, Dataset
 from environs import Env
 
 # get workspace and datastore
-env = Env()
+env = Env(expand_vars=True)
 env.read_env("foundation.env")
 workspace = Workspace(env("AZURE_SUBSCRIPTION_ID"), env("RESOURCE_GROUP"), env("WORKSPACE_NAME"))
 datastore = Datastore.get(workspace, env("SOME_EXTERNAL_ADLS_GEN2_DATASTORE_NAME"))

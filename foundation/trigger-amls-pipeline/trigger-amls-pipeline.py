@@ -71,7 +71,7 @@ auth = None
 if auth_type == "interactive":
     auth = InteractiveLoginAuthentication()
 if auth_type == "service_principal":
-    env = Env()
+    env = Env(expand_vars=True)
     env.read_env("foundation.env")
     env.read_env("service-principals.env")
     tenant_id = args.tenant_id if args.tenant_id else env("TRIGGER_AML_PIPELINE_SP_TENANT_ID")

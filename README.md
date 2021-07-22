@@ -22,6 +22,6 @@ As always - feel free to use but don't blame me if things go wrong. You have bee
 
 > **CAUTION**
 >
-> Some of the code contained is outdated because AML has a new v2 CLI meanwhile. To get the latest and
-> greatest, check [Azure ML's documentation](https://docs.microsoft.com/en-us/azure/machine-learning) and the samples
-> [here](https://github.com/Azure/azureml-examples).
+> Some of the code contained is outdated because AML has new features meanwhile incl. managed endpoints. To get the
+> latest and greatest, check [Azure ML's documentation](https://docs.microsoft.com/en-us/azure/machine-learning) and the
+> samples [here](https://github.com/Azure/azureml-examples).

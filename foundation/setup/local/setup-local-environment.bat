@@ -45,17 +45,16 @@ call az extension remove -n azure-cli-ml
 call az extension add -n ml
 
 : install CUDA toolkit for TensorFlow and PyTorch
-call conda install -y cudatoolkit=11.1 cudnn
+call conda install -y cudatoolkit=11.3 cudnn
 
 : install TensorFlow
-: note: if your machine does not have a GPU, use package "tensorflow" instead of "tensorflow-gpu"
-call pip install tensorflow-gpu==2.5
+call pip install tensorflow
 
 : install PyTorch
 : notes: - adjust as required, depending on your available hardware and other packages used, see https://pytorch.org
 :        - this may lead to conda downgrading TensorFlow. if this is the case, install a different environment or
 :          a compatible TensorFlow/PyTorch combination which bases on the same cudatoolkit version.
-call conda install -y pytorch torchvision torchaudio cudatoolkit=11.1 -c pytorch
+call conda install -y pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch
 
 : tell user that we're done
 echo.

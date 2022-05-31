@@ -35,14 +35,14 @@ call jupyter lab build
 
 : install Azure CLI, AzureML SDK + Azure CLI ML extension
 : Azure CLI
-call pip install azure-cli
+: call pip install azure-cli
 : AzureML SDK for Python
 call pip install azureml-core azureml-sdk azureml-mlflow azureml-monitoring azureml-datadrift
 : Azure CLI ML extension
 : remove the old azure-cli-ml extension if existing
-call az extension remove -n azure-cli-ml
+: call az extension remove -n azure-cli-ml
 : install the new ml extension
-call az extension add -n ml
+: call az extension add -n ml
 
 : install CUDA toolkit for TensorFlow and PyTorch
 call conda install -y cudatoolkit=11.3 cudnn

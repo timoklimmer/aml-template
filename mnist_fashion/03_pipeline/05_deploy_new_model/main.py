@@ -111,20 +111,20 @@ try:
     print(f"Auth method : {auth_method}{' (Azure AD)' if auth_method == AUTH_METHOD_TOKEN else ''}")
     if auth_method == AUTH_METHOD_TOKEN:
         print(
-            f"To authenticate against the webservice, ensure the principal accessing the webservice has proper "
-            f"permissions and that you pass the right token. Also be aware that tokens expire, so refresh your token "
-            f"before it has expired."
+            "To authenticate against the webservice, ensure the principal accessing the webservice has proper "
+            "permissions and that you pass the right token. Also be aware that tokens expire, so refresh your token "
+            "before it has expired."
         )
     if auth_method == AUTH_METHOD_KEYS:
         print(
-            f"For security reasons, the authentication keys for the webservice are not printed here. Get them at "
-            f"ml.azure.com."
+            "For security reasons, the authentication keys for the webservice are not printed here. Get them at "
+            "ml.azure.com."
         )
     if auth_method == AUTH_METHOD_NONE:
         print(
-            f"WARNING: The webservice was deployed without any form of authentication. It can be used by ANYONE in the "
-            f"internet. Please use a different authentication method for a better secured webservice. You have been "
-            f"warned!"
+            "WARNING: The webservice was deployed without any form of authentication. It can be used by ANYONE in the "
+            "internet. Please use a different authentication method for a better secured webservice. You have been "
+            "warned!"
         )
 
 except Exception as exception:
